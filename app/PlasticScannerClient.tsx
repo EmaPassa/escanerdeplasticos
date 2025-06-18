@@ -107,6 +107,7 @@ export default function PlasticScannerClient() {
   const [showCamera, setShowCamera] = useState(false)
   const videoRef = useRef(null)
   const streamRef = useRef(null)
+  const [capturedImage, setCapturedImage] = useState<string | null>(null)
 
   const startCamera = useCallback(async () => {
     try {
@@ -159,6 +160,28 @@ export default function PlasticScannerClient() {
       return "Verificar etiqueta específica"
     }
   }
+
+  const captureImage = useCallback(() => {
+    if (videoRef.current) {
+      const canvas = document.createElement("canvas")
+      const video = videoRef.current
+      canvas.width = video.videoWidth
+      canvas.height = video.videoHeight
+      const ctx = canvas.getContext("2d")
+      if (ctx) {
+        ctx.drawImage(video, 0, 0)
+        const imageData = canvas.toDataURL("image/jpeg", 0.8)
+        setCapturedImage(imageData)
+
+        // Simular detección después de 2 segundos
+        setTimeout(() => {
+          const randomCode = Math.floor(Math.random() * 7) + 1
+          simulateDetection(randomCode)
+          setCapturedImage(null)
+        }, 2000)
+      }
+    }
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
@@ -215,14 +238,22 @@ export default function PlasticScannerClient() {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-32 h-32 border-2 border-white rounded-lg opacity-50"></div>
                   </div>
+                  {capturedImage && (
+                    <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                        <p className="text-sm text-gray-600">Analizando código de reciclaje...</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <Button onClick={stopCamera} variant="outline" className="flex-1">
                     Cancelar
                   </Button>
-                  <div className="text-sm text-gray-500 flex-1 text-center pt-2">
-                    Enfoca el código de reciclaje en el cuadro
-                  </div>
+                  <Button onClick={captureImage} className="flex-1" disabled={!!capturedImage}>
+                    {capturedImage ? "Procesando..." : "Capturar"}
+                  </Button>
                 </div>
               </div>
             )}
