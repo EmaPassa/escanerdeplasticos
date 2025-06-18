@@ -15,6 +15,8 @@ const plasticDatabase = {
     technicalName: "Polyethylene Terephthalate",
     commonUses: "Botellas de agua, envases de alimentos, botellas de refrescos, bandejas de alimentos, fibras textiles",
     microwaveSafe: false,
+    fridgeSafe: true,
+    freezerSafe: true,
     characteristics: [
       "Transparente, ligero, resistente a químicos",
       "Excelente barrera contra gases",
@@ -24,7 +26,11 @@ const plasticDatabase = {
     ],
     recycling: "Alta reciclabilidad - Se recicla en fibra textil, alfombras y nuevos envases",
     safetyNotes:
-      "No calentar en microondas. Evitar reutilizar para bebidas calientes. Puede liberar antimonio con el calor prolongado.",
+      "❌ Microondas: No seguro (puede liberar ftalatos). ✅ Heladera/Freezer: Sí, pero no reutilizar muchas veces.",
+    alternatives: {
+      microwave: "Envases de vidrio templado (ej.: Pyrex) o cerámica sin plomo",
+      storage: "Tuppers de acero inoxidable con tapa de silicón (ej.: Klean Kanteen)",
+    },
     color: "bg-blue-100 text-blue-800",
     applications: "Packaging de alimentos y bebidas, textiles, alfombras, fibras",
     temperatureRange: "Uso: -40°C a +70°C",
@@ -36,8 +42,10 @@ const plasticDatabase = {
     code: 2,
     name: "HDPE (Polietileno de Alta Densidad)",
     technicalName: "High-Density Polyethylene",
-    commonUses: "Envases de detergente, juguetes, tuberías, botellas de leche, contenedores de productos químicos",
-    microwaveSafe: false,
+    commonUses: "Envases de detergente, juguetes, tuberías, botellas de leche, envases de yogur, jugos",
+    microwaveSafe: "conditional", // Solo si está etiquetado
+    fridgeSafe: true,
+    freezerSafe: true,
     characteristics: [
       "Rígido, resistente a impactos y químicos",
       "Excelente resistencia química",
@@ -47,20 +55,26 @@ const plasticDatabase = {
       "Densidad: 0.94-0.97 g/cm³",
     ],
     recycling: "Alta reciclabilidad - Fácilmente procesable en nuevos productos",
-    safetyNotes: "No apto para microondas. Seguro para almacenar alimentos fríos y a temperatura ambiente.",
+    safetyNotes: "⚠️ Microondas: Solo si está etiquetado como 'apto microondas'. ✅ Freezer: Buen rendimiento.",
+    alternatives: {
+      microwave: "Envases de vidrio o PP (5) certificado para microondas",
+      storage: "Bolsas de silicón alimentario reutilizable (ej.: Stasher)",
+    },
     color: "bg-green-100 text-green-800",
     applications: "Envases industriales, juguetes, tuberías, films, productos domésticos",
     temperatureRange: "Uso: -50°C a +80°C",
     chemicalResistance: "Excelente resistencia a ácidos, bases y solventes",
     advantages: ["Muy resistente químicamente", "Duradero", "Alta reciclabilidad", "Económico"],
-    disadvantages: ["No transparente", "Sensible a hidrocarburos", "No apto microondas"],
+    disadvantages: ["No transparente", "Sensible a hidrocarburos", "Microondas condicional"],
   },
   3: {
     code: 3,
     name: "PVC (Policloruro de Vinilo)",
     technicalName: "Polyvinyl Chloride",
-    commonUses: "Tuberías, cables, muebles, perfiles de ventanas, envases de aceite, blísteres farmacéuticos",
+    commonUses: "Tuberías, cables, muebles, film transparente, envases rígidos",
     microwaveSafe: false,
+    fridgeSafe: false,
+    freezerSafe: false,
     characteristics: [
       "Resistente a la intemperie, versátil",
       "Rígido o flexible según aditivos",
@@ -70,10 +84,13 @@ const plasticDatabase = {
       "Densidad: 1.16-1.58 g/cm³",
     ],
     recycling: "Difícil reciclabilidad - Libera tóxicos al quemarse",
-    safetyNotes:
-      "NO usar con alimentos grasos o calientes. Puede liberar químicos tóxicos. Evitar contacto prolongado con alimentos.",
+    safetyNotes: "❌ Microondas/Freezer: Evitar (libera toxinas como dioxinas). NO usar con alimentos.",
+    alternatives: {
+      covering: "Tapas de silicón ajustables o telas enceradas",
+      containers: "Vidrio o PP (5) para envases rígidos",
+    },
     color: "bg-red-100 text-red-800",
-    applications: "Construcción, cables, muebles, packaging no alimentario, dispositivos médicos",
+    applications: "Construcción, cables, muebles, packaging no alimentario",
     temperatureRange: "Uso: -10°C a +60°C (rígido), -30°C a +80°C (flexible)",
     chemicalResistance: "Buena resistencia a ácidos, bases y alcoholes",
     advantages: ["Versátil", "Resistente a intemperie", "Ignífugo", "Económico"],
@@ -83,8 +100,10 @@ const plasticDatabase = {
     code: 4,
     name: "LDPE (Polietileno de Baja Densidad)",
     technicalName: "Low-Density Polyethylene",
-    commonUses: "Bolsas plásticas, film transparente, tapas flexibles, squeeze bottles, envases flexibles",
+    commonUses: "Bolsas plásticas, film transparente, bolsas de freezer, tapas flexibles",
     microwaveSafe: false,
+    fridgeSafe: true,
+    freezerSafe: true,
     characteristics: [
       "Flexible, resistente a bajas temperaturas",
       "Excelente resistencia al impacto",
@@ -94,43 +113,55 @@ const plasticDatabase = {
       "Densidad: 0.91-0.94 g/cm³",
     ],
     recycling: "Baja reciclabilidad - Requiere procesos especializados",
-    safetyNotes: "No apto para microondas. Puede deformarse con calor. Seguro para alimentos fríos.",
+    safetyNotes: "❌ Microondas: No apto (se derrite). ✅ Freezer: Funciona, pero no es sostenible.",
+    alternatives: {
+      microwave: "Tuppers de vidrio con tapa de PP (5)",
+      storage: "Bolsas de algodón con recubrimiento de cera de abeja o silicón alimentario",
+    },
     color: "bg-yellow-100 text-yellow-800",
     applications: "Films, bolsas, revestimientos, cables, juguetes flexibles",
     temperatureRange: "Uso: -50°C a +80°C",
     chemicalResistance: "Resistente a ácidos, bases débiles y alcoholes",
     advantages: ["Muy flexible", "Resistente al impacto", "Impermeable", "Sellable"],
-    disadvantages: ["Baja resistencia térmica", "Baja reciclabilidad", "Difícil impresión"],
+    disadvantages: ["Baja resistencia térmica", "Baja reciclabilidad", "Se derrite fácil"],
   },
   5: {
     code: 5,
     name: "PP (Polipropileno)",
     technicalName: "Polypropylene",
-    commonUses: "Envases médicos, pajitas, tapas, tupperware, envases de yogur, pañales, alfombras",
+    commonUses: "Envases médicos, pajitas, tapas, tupperware, envases de yogur, envases para calentar",
     microwaveSafe: true,
+    fridgeSafe: true,
+    freezerSafe: true,
     characteristics: [
       "Térmicamente estable, resistente a grasas",
       "Excelente resistencia química",
       "Liviano y duradero",
-      "Buena resistencia a grasas",
+      "Resistente hasta ~120°C",
       "Temperatura de fusión: 160-166°C",
       "Densidad: 0.85-0.92 g/cm³",
     ],
     recycling: "Media-Alta reciclabilidad - Procesable en nuevos productos",
-    safetyNotes: "APTO para microondas hasta 120°C. Seguro para alimentos calientes y fríos. Resistente a grasas.",
+    safetyNotes: "✅ Microondas: Ideal (resistente hasta ~120°C). ✅ Freezer: Buen desempeño.",
+    alternatives: {
+      eco: "Vidrio (opción más ecológica)",
+      storage: "Envases de acero inoxidable (evitan olores y manchas)",
+    },
     color: "bg-emerald-100 text-emerald-800",
     applications: "Packaging alimentario, dispositivos médicos, textiles, componentes automotrices",
     temperatureRange: "Uso: -20°C a +120°C",
     chemicalResistance: "Excelente resistencia a ácidos, bases, grasas y solventes",
-    advantages: ["Apto microondas", "Resistente al calor", "Resistente a grasas", "Media-alta reciclabilidad"],
+    advantages: ["Apto microondas", "Resistente al calor", "Resistente a grasas", "Muy seguro"],
     disadvantages: ["Sensible a UV", "Puede volverse quebradizo con frío extremo"],
   },
   6: {
     code: 6,
     name: "PS (Poliestireno)",
     technicalName: "Polystyrene",
-    commonUses: "Vasos desechables, bandejas de comida, espuma (EPS), envases de yogur, CD cases, aislamiento",
+    commonUses: "Vasos desechables, bandejas de comida, bandejas de carne, espuma (EPS), envases de yogur",
     microwaveSafe: false,
+    fridgeSafe: "caution",
+    freezerSafe: "caution",
     characteristics: [
       "Ligero, puede ser rígido o espumado",
       "Frágil y quebradizo",
@@ -140,33 +171,40 @@ const plasticDatabase = {
       "Densidad: 0.96-1.04 g/cm³ (sólido), 0.01-0.05 g/cm³ (espuma)",
     ],
     recycling: "Baja reciclabilidad - Difícil de reciclar",
-    safetyNotes:
-      "NO usar en microondas. Puede liberar estireno con el calor. Evitar contacto con alimentos grasos o calientes.",
+    safetyNotes: "❌ Microondas/Freezer: Peligroso (libera estireno, cancerígeno). Evitar alimentos calientes.",
+    alternatives: {
+      trays: "Bagazo de caña o fibra de bambú (resistentes al frío)",
+      cups: "Cartón con recubrimiento vegetal (para bebidas calientes)",
+    },
     color: "bg-orange-100 text-orange-800",
     applications: "Packaging desechable, aislamiento, productos electrónicos, juguetes",
     temperatureRange: "Uso: -40°C a +70°C",
     chemicalResistance: "Resistente a ácidos y bases débiles, sensible a solventes orgánicos",
     advantages: ["Muy liviano", "Buen aislante", "Económico", "Fácil procesamiento"],
-    disadvantages: ["Frágil", "Libera estireno", "Baja reciclabilidad", "Sensible a solventes"],
+    disadvantages: ["Frágil", "Libera estireno", "Cancerígeno", "Muy peligroso"],
   },
   7: {
     code: 7,
     name: "Otros Plásticos",
     technicalName: "Other Plastics (PC, PLA, ABS, etc.)",
-    commonUses:
-      "Electrónicos, bioplásticos, materiales compuestos, policarbonato (PC), PLA para impresión 3D, acrílicos",
-    microwaveSafe: null,
+    commonUses: "Electrónicos, bioplásticos, materiales compuestos, envases 'biodegradables', mezclas, PLA",
+    microwaveSafe: "depends",
+    fridgeSafe: "depends",
+    freezerSafe: "depends",
     characteristics: [
       "Varias propiedades según composición",
-      "Incluye policarbonato, PLA, ABS",
+      "PLA (bioplástico): Solo para heladera",
       "Puede contener BPA (en PC)",
       "Mezclas de diferentes polímeros",
       "Temperaturas y densidades variables",
       "Propiedades específicas según composición",
     ],
     recycling: "Depende del tipo - PLA es compostable, otros generalmente no reciclables",
-    safetyNotes:
-      "Verificar etiqueta específica. Algunos contienen BPA. Propiedades de seguridad variables según composición.",
+    safetyNotes: "Depende del material. PLA: Solo heladera ❄️. No freezer ni microondas (se deforma).",
+    alternatives: {
+      freezer: "Envases de fibra de arroz o trigo",
+      general: "Vidrio para mayor seguridad",
+    },
     color: "bg-purple-100 text-purple-800",
     applications: "Electrónicos, lentes, CDs, componentes automotrices, impresión 3D, bioplásticos",
     temperatureRange: "Variable según composición",
@@ -536,6 +574,97 @@ export default function PlasticScannerClient() {
                   </div>
                 </div>
               </div>
+
+              {/* Thermal Safety Section */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="font-medium mb-3">🌡️ Seguridad Térmica</h4>
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="text-center">
+                    <div className="font-medium mb-1">Microondas</div>
+                    <div
+                      className={`text-lg ${
+                        selectedPlastic.microwaveSafe === true
+                          ? "text-green-600"
+                          : selectedPlastic.microwaveSafe === "conditional"
+                            ? "text-yellow-600"
+                            : selectedPlastic.microwaveSafe === "depends"
+                              ? "text-purple-600"
+                              : "text-red-600"
+                      }`}
+                    >
+                      {selectedPlastic.microwaveSafe === true
+                        ? "✅"
+                        : selectedPlastic.microwaveSafe === "conditional"
+                          ? "⚠️"
+                          : selectedPlastic.microwaveSafe === "depends"
+                            ? "❓"
+                            : "❌"}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-medium mb-1">Heladera</div>
+                    <div
+                      className={`text-lg ${
+                        selectedPlastic.fridgeSafe === true
+                          ? "text-green-600"
+                          : selectedPlastic.fridgeSafe === "caution"
+                            ? "text-yellow-600"
+                            : selectedPlastic.fridgeSafe === "depends"
+                              ? "text-purple-600"
+                              : "text-red-600"
+                      }`}
+                    >
+                      {selectedPlastic.fridgeSafe === true
+                        ? "✅"
+                        : selectedPlastic.fridgeSafe === "caution"
+                          ? "⚠️"
+                          : selectedPlastic.fridgeSafe === "depends"
+                            ? "❓"
+                            : "❌"}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-medium mb-1">Freezer</div>
+                    <div
+                      className={`text-lg ${
+                        selectedPlastic.freezerSafe === true
+                          ? "text-green-600"
+                          : selectedPlastic.freezerSafe === "caution"
+                            ? "text-yellow-600"
+                            : selectedPlastic.freezerSafe === "depends"
+                              ? "text-purple-600"
+                              : "text-red-600"
+                      }`}
+                    >
+                      {selectedPlastic.freezerSafe === true
+                        ? "✅"
+                        : selectedPlastic.freezerSafe === "caution"
+                          ? "⚠️"
+                          : selectedPlastic.freezerSafe === "depends"
+                            ? "❓"
+                            : "❌"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Alternatives Section */}
+              {selectedPlastic.alternatives && (
+                <div className="bg-green-50 rounded-lg p-4">
+                  <h4 className="font-medium mb-3">🌱 Alternativas Recomendadas</h4>
+                  <div className="space-y-2 text-sm">
+                    {Object.entries(selectedPlastic.alternatives).map(([key, value], index) => (
+                      <div key={index} className="flex items-start gap-2">
+                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
+                        <div>
+                          <span className="font-medium capitalize">{key.replace(/([A-Z])/g, " $1")}: </span>
+                          <span className="text-gray-700">{value}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <Button onClick={() => setSelectedPlastic(null)} variant="outline" className="w-full">
                 Escanear Otro Envase
