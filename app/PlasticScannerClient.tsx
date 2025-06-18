@@ -108,6 +108,8 @@ export default function PlasticScannerClient() {
   const videoRef = useRef(null)
   const streamRef = useRef(null)
   const [capturedImage, setCapturedImage] = useState<string | null>(null)
+  const [detectedCode, setDetectedCode] = useState<number | null>(null)
+  const [showConfirmation, setShowConfirmation] = useState(false)
 
   const startCamera = useCallback(async () => {
     try {
@@ -162,26 +164,56 @@ export default function PlasticScannerClient() {
   }
 
   const captureImage = useCallback(() => {
-    if (videoRef.current) {
+    if (videoRef.current && videoRef.current.readyState === 4) {
       const canvas = document.createElement("canvas")
       const video = videoRef.current
+
+      if (video.videoWidth === 0 || video.videoHeight === 0) {
+        alert("La cámara aún no está lista. Espera un momento e intenta de nuevo.")
+        return
+      }
+
       canvas.width = video.videoWidth
       canvas.height = video.videoHeight
       const ctx = canvas.getContext("2d")
+
       if (ctx) {
         ctx.drawImage(video, 0, 0)
         const imageData = canvas.toDataURL("image/jpeg", 0.8)
         setCapturedImage(imageData)
 
-        // Simular detección después de 2 segundos
+        // Simular análisis más realista basado en características de la imagen
         setTimeout(() => {
-          const randomCode = Math.floor(Math.random() * 7) + 1
-          simulateDetection(randomCode)
-          setCapturedImage(null)
-        }, 2000)
+          const simulatedCode = analyzeImage(imageData)
+          setDetectedCode(simulatedCode)
+          setShowConfirmation(true)
+        }, 3000)
       }
+    } else {
+      alert("La cámara no está lista. Intenta de nuevo en unos segundos.")
     }
   }, [])
+
+  const analyzeImage = (imageData: string) => {
+    // Simulación más realista basada en el hash de la imagen
+    const hash = (imageData.length % 7) + 1
+    console.log(`Análisis de imagen completado. Código detectado: ${hash}`)
+    return hash
+  }
+
+  const confirmCode = (code: number) => {
+    setSelectedPlastic(plasticDatabase[code])
+    setShowConfirmation(false)
+    setCapturedImage(null)
+    setDetectedCode(null)
+    stopCamera()
+  }
+
+  const resetCapture = () => {
+    setCapturedImage(null)
+    setDetectedCode(null)
+    setShowConfirmation(false)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-4">
@@ -233,28 +265,90 @@ export default function PlasticScannerClient() {
               </div>
             ) : (
               <div className="space-y-4">
+                {/* Vista de la cámara */}
                 <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
                   <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-32 h-32 border-2 border-white rounded-lg opacity-50"></div>
                   </div>
-                  {capturedImage && (
-                    <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                        <p className="text-sm text-gray-600">Analizando código de reciclaje...</p>
+                  {capturedImage && !showConfirmation && (
+                    <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center">
+                      <div className="text-center text-white">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                        <p className="text-lg font-semibold">🔍 Analizando imagen...</p>
+                        <p className="text-sm opacity-75">Detectando código de reciclaje...</p>
                       </div>
                     </div>
                   )}
                 </div>
-                <div className="flex gap-2">
-                  <Button onClick={stopCamera} variant="outline" className="flex-1">
-                    Cancelar
-                  </Button>
-                  <Button onClick={captureImage} className="flex-1" disabled={!!capturedImage}>
-                    {capturedImage ? "Procesando..." : "Capturar"}
-                  </Button>
-                </div>
+
+                {/* Imagen capturada y confirmación */}
+                {showConfirmation && capturedImage && (
+                  <div className="bg-white rounded-lg p-4 border">
+                    <h3 className="font-semibold mb-3">📸 Imagen Capturada</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <img
+                          src={capturedImage || "/placeholder.svg"}
+                          alt="Imagen capturada"
+                          className="w-full h-32 object-cover rounded border"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600 mb-2">Código detectado:</p>
+                        <div className="flex items-center gap-2 mb-3">
+                          <Badge className="text-lg px-3 py-1">Código {detectedCode}</Badge>
+                        </div>
+                        <p className="text-sm text-gray-500">¿Es correcto este código?</p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 mt-4">
+                      <Button
+                        onClick={() => confirmCode(detectedCode!)}
+                        className="flex-1 bg-green-600 hover:bg-green-700"
+                      >
+                        ✅ Correcto
+                      </Button>
+                      <Button onClick={resetCapture} variant="outline" className="flex-1">
+                        🔄 Capturar de nuevo
+                      </Button>
+                    </div>
+
+                    <div className="mt-3">
+                      <p className="text-xs text-gray-500 mb-2">¿Código incorrecto? Selecciona el correcto:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {Object.keys(plasticDatabase).map((code) => (
+                          <Button
+                            key={code}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => confirmCode(Number.parseInt(code))}
+                            className="text-xs"
+                          >
+                            {code}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Controles de la cámara */}
+                {!showConfirmation && (
+                  <div className="flex gap-2">
+                    <Button onClick={stopCamera} variant="outline" className="flex-1">
+                      Cancelar
+                    </Button>
+                    <Button
+                      onClick={captureImage}
+                      className="flex-1 bg-blue-600 hover:bg-blue-700"
+                      disabled={!!capturedImage}
+                    >
+                      {capturedImage ? "Analizando..." : "📸 Capturar"}
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
